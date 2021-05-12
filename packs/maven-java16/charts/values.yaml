@@ -69,6 +69,7 @@ service:
   annotations: {}
   # Add labels to the service
   labels: {}
+
 resources:
   limits:
     cpu: 400m
@@ -100,6 +101,7 @@ ingress:
   annotations: {}
   # defaults to nginx if no other ingress class annotation specified
   classAnnotation: ""
+
   # Add labels to the ingress
   labels: {}
 
@@ -111,6 +113,7 @@ serviceAccount:
   name: ""
   annotations: {}
 #    iam.gke.io/gcp-service-account: my-sa-in-gke
+
   # Add labels to the SA
   labels: {}
 #    my-custom-label: value

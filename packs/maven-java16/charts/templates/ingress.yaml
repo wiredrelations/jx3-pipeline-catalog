@@ -28,6 +28,7 @@ spec:
             name: {{ .Values.service.name }}
             port:
               number: {{ .Values.service.externalPort }}
+
 {{- if eq "NodePort" .Values.jxRequirements.ingress.serviceType }}
         path: "/{{ .Release.Namespace }}/hook"
 {{- else if .Values.jxRequirements.ingress.domain }}

@@ -9,6 +9,7 @@ metadata:
 {{- if .Values.canary.labels }}
 {{ toYaml .Values.canary.labels | indent 4 }}
 {{- end }}
+
 spec:
   provider: istio
   targetRef:
@@ -53,6 +54,7 @@ metadata:
   labels:
 {{ toYaml .Values.canary.gatewayLabels | indent 4 }}
 {{- end }}
+
 spec:
   selector:
     istio: ingressgateway

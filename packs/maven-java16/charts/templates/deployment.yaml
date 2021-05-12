@@ -10,6 +10,7 @@ metadata:
 {{- if .Values.deploymentLabels }}
 {{ toYaml .Values.deploymentLabels | indent 4 }}
 {{- end }}
+
 spec:
   selector:
     matchLabels:
@@ -26,6 +27,7 @@ spec:
 {{- if .Values.podsLabels }}
 {{ toYaml .Values.podsLabels | indent 6 }}
 {{- end }}
+
 {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
