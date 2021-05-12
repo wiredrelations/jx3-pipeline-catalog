@@ -6,10 +6,13 @@ metadata:
   labels:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+<<<<<<< HEAD
 {{- if .Values.canary.labels }}
 {{ toYaml .Values.canary.labels | indent 4 }}
 {{- end }}
 
+=======
+>>>>>>> Add maven-java16
 spec:
   provider: istio
   targetRef:
