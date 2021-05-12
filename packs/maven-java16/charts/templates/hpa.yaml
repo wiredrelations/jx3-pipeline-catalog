@@ -9,6 +9,7 @@ metadata:
 {{- if .Values.hpa.labels }}
 {{ toYaml .Values.hpa.labels | indent 4 }}
 {{- end }}
+
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

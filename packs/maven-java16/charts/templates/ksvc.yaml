@@ -21,6 +21,7 @@ spec:
       labels:
 {{ toYaml .Values.podsLabels | indent 8 }}
 {{- end }}
+
     spec:
       containers:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
