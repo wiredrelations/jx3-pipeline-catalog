@@ -69,8 +69,13 @@ spec:
             echo "upgrading the pom to version $VERSION"
             mvn versions:set -DnewVersion=$VERSION
 
+<<<<<<< HEAD
             mvn --no-transfer-progress clean deploy
         - image: ghcr.io/jenkins-x/jx-registry:0.1.10
+=======
+            mvn --no-transfer-progress --update-snapshots clean deploy
+        - image: ghcr.io/jenkins-x/jx-registry:0.1.1
+>>>>>>> Remove old values ref
           name: check-registry
           resources: {}
         - image: gcr.io/kaniko-project/executor:v1.9.1-debug
