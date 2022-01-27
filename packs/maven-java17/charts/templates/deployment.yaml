@@ -8,9 +8,12 @@ metadata:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- if .Values.deploymentLabels }}
 {{ toYaml .Values.deploymentLabels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 =======
 >>>>>>> Add maven-java17
 spec:
@@ -27,17 +30,23 @@ spec:
         draft: {{ default "draft-app" .Values.draft }}
         app: {{ template "fullname" . }}
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- if .Values.podsLabels }}
 {{ toYaml .Values.podsLabels | indent 6 }}
 {{- end }}
 {{- if .Values.podAnnotations }}
       annotations:
 =======
+=======
+>>>>>>> Add maven-java17
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
         prometheus.io/path: "/actuator/prometheus"
 {{- if .Values.podAnnotations }}
+<<<<<<< HEAD
+>>>>>>> Add maven-java17
+=======
 >>>>>>> Add maven-java17
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
@@ -69,7 +78,11 @@ spec:
           httpGet:
             path: {{ .Values.livenessProbe.probePath | default .Values.probePath }}
 <<<<<<< HEAD
+<<<<<<< HEAD
             port: {{ .Values.service.internalPort }}
+=======
+            port: {{ .Values.probePort | default .Values.service.internalPort }}
+>>>>>>> Add maven-java17
 =======
             port: {{ .Values.probePort | default .Values.service.internalPort }}
 >>>>>>> Add maven-java17
@@ -81,7 +94,11 @@ spec:
           httpGet:
             path: {{ .Values.readinessProbe.probePath | default .Values.probePath }}
 <<<<<<< HEAD
+<<<<<<< HEAD
             port: {{ .Values.service.internalPort }}
+=======
+            port: {{ .Values.probePort | default .Values.service.internalPort }}
+>>>>>>> Add maven-java17
 =======
             port: {{ .Values.probePort | default .Values.service.internalPort }}
 >>>>>>> Add maven-java17

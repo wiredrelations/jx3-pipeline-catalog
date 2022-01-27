@@ -11,9 +11,12 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 =======
 >>>>>>> Add maven-java17
 {{- if .Values.service.annotations }}
