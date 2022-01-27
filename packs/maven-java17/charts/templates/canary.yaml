@@ -7,9 +7,12 @@ metadata:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- if .Values.canary.labels }}
 {{ toYaml .Values.canary.labels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 =======
 >>>>>>> Add maven-java17
 spec:
@@ -53,10 +56,13 @@ kind: Gateway
 metadata:
   name: {{ template "fullname" . }}
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- if .Values.canary.gatewayLabels }}
   labels:
 {{ toYaml .Values.canary.gatewayLabels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 =======
 >>>>>>> Add maven-java17
 spec:

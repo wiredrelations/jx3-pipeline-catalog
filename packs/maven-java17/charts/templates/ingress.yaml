@@ -16,9 +16,12 @@ metadata:
 {{- end }}
   name: {{ .Values.service.name }}
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{- if .Values.ingress.labels }}
 {{ toYaml .Values.ingress.labels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 =======
 >>>>>>> Add maven-java17
 spec:
@@ -26,12 +29,18 @@ spec:
   - http:
       paths:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
         backend:
           service:
             name: {{ .Values.service.name }}
             port:
               number: {{ .Values.service.externalPort }}
+=======
+      - backend:
+          serviceName: {{ .Values.service.name }}
+          servicePort: 80
+>>>>>>> Add maven-java17
 =======
       - backend:
           serviceName: {{ .Values.service.name }}
@@ -50,9 +59,15 @@ spec:
     secretName: "{{ .Values.jxRequirements.ingress.tls.secretName }}"
 {{- else if .Values.jxRequirements.ingress.tls.production }}
 <<<<<<< HEAD
+<<<<<<< HEAD
     secretName: "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-p"
 {{- else }}
     secretName: "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-s"
+=======
+    secretName: "jx/tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-p"
+{{- else }}
+    secretName: "jx/tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-s"
+>>>>>>> Add maven-java17
 =======
     secretName: "jx/tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-p"
 {{- else }}
