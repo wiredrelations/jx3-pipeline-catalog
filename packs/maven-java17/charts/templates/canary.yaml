@@ -6,9 +6,12 @@ metadata:
   labels:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+<<<<<<< HEAD
 {{- if .Values.canary.labels }}
 {{ toYaml .Values.canary.labels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 spec:
   provider: istio
   targetRef:
@@ -49,10 +52,13 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: {{ template "fullname" . }}
+<<<<<<< HEAD
 {{- if .Values.canary.gatewayLabels }}
   labels:
 {{ toYaml .Values.canary.gatewayLabels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 spec:
   selector:
     istio: ingressgateway
