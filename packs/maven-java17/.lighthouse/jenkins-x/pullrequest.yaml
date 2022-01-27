@@ -12,6 +12,7 @@ spec:
         metadata: {}
         stepTemplate:
           env:
+<<<<<<< HEAD
           - name: MAVEN_OPTS
             value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java17/pullrequest.yaml@versionStream
@@ -19,6 +20,20 @@ spec:
           resources:
             # override limits for all containers here
             limits: {}
+=======
+          - name: _JAVA_OPTIONS
+            value: -XX:+UnlockExperimentalVMOptions -Dsun.zip.disableMemoryMapping=true
+              -XX:+UseParallelGC -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:GCTimeRatio=4
+              -XX:AdaptiveSizePolicyWeight=90 -Xms10m -Xmx192m
+          - name: MAVEN_OPTS
+            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+          image: uses:wiredrelations/jx3-pipeline-catalog/tasks/maven-java17/pullrequest.yaml@versionStream
+          name: ""
+          resources:
+            requests:
+              cpu: 400m
+              memory: 512Mi
+>>>>>>> Add maven-java17
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
@@ -28,11 +43,15 @@ spec:
           name: ""
           resources: {}
         - name: jx-variables
+<<<<<<< HEAD
           resources:
             # override requests for the pod here
             requests:
               cpu: 400m
               memory: 512Mi
+=======
+          resources: {}
+>>>>>>> Add maven-java17
         - name: build-set-version
           resources: {}
         - name: build-mvn-install
@@ -49,5 +68,9 @@ spec:
             secretName: jenkins-maven-settings
   podTemplate: {}
   serviceAccountName: tekton-bot
+<<<<<<< HEAD
   timeout: 1h0m0s
+=======
+  timeout: 240h0m0s
+>>>>>>> Add maven-java17
 status: {}

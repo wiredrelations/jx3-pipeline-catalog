@@ -7,9 +7,12 @@ metadata:
   labels:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+<<<<<<< HEAD
 {{- if .Values.deploymentLabels }}
 {{ toYaml .Values.deploymentLabels | indent 4 }}
 {{- end }}
+=======
+>>>>>>> Add maven-java17
 spec:
   selector:
     matchLabels:
@@ -23,11 +26,14 @@ spec:
       labels:
         draft: {{ default "draft-app" .Values.draft }}
         app: {{ template "fullname" . }}
+<<<<<<< HEAD
 {{- if .Values.podsLabels }}
 {{ toYaml .Values.podsLabels | indent 6 }}
 {{- end }}
 {{- if .Values.podAnnotations }}
       annotations:
+=======
+>>>>>>> Add maven-java17
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
@@ -62,7 +68,11 @@ spec:
         livenessProbe:
           httpGet:
             path: {{ .Values.livenessProbe.probePath | default .Values.probePath }}
+<<<<<<< HEAD
             port: {{ .Values.service.internalPort }}
+=======
+            port: {{ .Values.probePort | default .Values.service.internalPort }}
+>>>>>>> Add maven-java17
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
@@ -70,7 +80,11 @@ spec:
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.probePath | default .Values.probePath }}
+<<<<<<< HEAD
             port: {{ .Values.service.internalPort }}
+=======
+            port: {{ .Values.probePort | default .Values.service.internalPort }}
+>>>>>>> Add maven-java17
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           successThreshold: {{ .Values.readinessProbe.successThreshold }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
