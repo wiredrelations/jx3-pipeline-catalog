@@ -69,7 +69,7 @@ spec:
             echo "upgrading the pom to version $VERSION"
             mvn versions:set -DnewVersion=$VERSION
 
-            mvn --no-transfer-progress clean deploy
+            mvn --no-transfer-progress --update-snapshots clean deploy
         - image: maven:3.8.2-openjdk-17
           name: build-mvn-install
           resources: {}

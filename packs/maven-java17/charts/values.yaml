@@ -69,6 +69,7 @@ service:
   annotations: {}
   # Add labels to the service
   labels: {}
+
 resources:
   limits:
     cpu: 400m
@@ -79,6 +80,7 @@ resources:
 
 # default spring boot probe path
 probePath: /actuator/health
+probePort: 9090
 
 livenessProbe:
   initialDelaySeconds: 60
