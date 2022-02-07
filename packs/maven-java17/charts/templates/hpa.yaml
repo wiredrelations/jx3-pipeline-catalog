@@ -6,15 +6,9 @@ metadata:
   labels:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-<<<<<<< HEAD
-<<<<<<< HEAD
 {{- if .Values.hpa.labels }}
 {{ toYaml .Values.hpa.labels | indent 4 }}
 {{- end }}
-=======
->>>>>>> Add maven-java17
-=======
->>>>>>> Add maven-java17
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
