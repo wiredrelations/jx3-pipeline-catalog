@@ -1,1 +1,3 @@
-# Java 14 application
+# my application
+
+Maven Java 17
