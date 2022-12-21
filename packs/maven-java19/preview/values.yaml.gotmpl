@@ -1,0 +1,34 @@
+jxRequirements:
+  ingress:
+    namespaceSubDomain: "-pr{{ requiredEnv "PULL_NUMBER" }}."
+
+image:
+  repository: "{{ requiredEnv "DOCKER_REGISTRY" }}/{{ requiredEnv "DOCKER_REGISTRY_ORG" }}/{{ requiredEnv "APP_NAME" }}"
+  tag: "{{ requiredEnv "VERSION" }}"
+  pullPolicy: "Always"
+
+env:
+  SPRING_PROFILES_ACTIVE: preview
+  
+# default spring boot probe path
+probePath: /actuator/health
+probePort: 9090
+
+livenessProbe:
+  initialDelaySeconds: 300
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 10
+readinessProbe:
+  failureThreshold: 3
+  periodSeconds: 30
+  successThreshold: 1
+  timeoutSeconds: 10
+
+resources:
+  limits:
+    cpu: 800m
+    memory: 1024Mi
+  requests:
+    cpu: 200m
+    memory: 128Mi

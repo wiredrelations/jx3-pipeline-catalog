@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   creationTimestamp: null
-  name: release
+  name: pullrequest
 spec:
   pipelineSpec:
     tasks:
@@ -14,7 +14,7 @@ spec:
           env:
           - name: MAVEN_OPTS
             value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
-          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java17/release.yaml@versionStream
+          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java19/pullrequest.yaml@versionStream
           name: ""
           resources:
             # override limits for all containers here
@@ -22,14 +22,10 @@ spec:
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
-          - mountPath: /root/.gnupg
-            name: release-gpg
           workingDir: /workspace/source
         steps:
-        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
           name: ""
-          resources: {}
-        - name: next-version
           resources: {}
         - name: jx-variables
           resources:
@@ -37,27 +33,21 @@ spec:
             requests:
               cpu: 400m
               memory: 512Mi
-        - name: build-mvn-deploy
+        - name: build-set-version
+          resources: {}
+        - name: build-mvn-install
           resources: {}
         - name: check-registry
           resources: {}
         - name: build-container-build
           resources: {}
-        - name: promote-changelog
-          resources: {}
-        - name: promote-helm-release
-          resources: {}
-        - name: promote-jx-promote
+        - name: promote-jx-preview
           resources: {}
         volumes:
         - name: maven-settings
           secret:
             secretName: jenkins-maven-settings
-        - name: release-gpg
-          secret:
-            optional: true
-            secretName: jenkins-release-gpg
   podTemplate: {}
   serviceAccountName: tekton-bot
-  timeout: 12h0m0s
+  timeout: 1h0m0s
 status: {}
