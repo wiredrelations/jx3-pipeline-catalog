@@ -28,10 +28,6 @@ spec:
 {{- end }}
 {{- if .Values.podAnnotations }}
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9090"
-        prometheus.io/path: "/actuator/prometheus"
-{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:

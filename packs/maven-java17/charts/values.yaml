@@ -3,7 +3,10 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 # Add annotations to the pods
-podAnnotations: {}
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9090"
+  prometheus.io/path: "/actuator/prometheus"
 # Add labels to the pods
 podsLabels: {}
 # Add labels to the deployment
