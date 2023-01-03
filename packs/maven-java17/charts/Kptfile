@@ -7,5 +7,5 @@ upstream:
   git:
     commit: b52b35506a05e046d54615c3ade97f3aef8bfb08
     repo: https://github.com/wiredrelations/jx3-pipeline-catalog
-    directory: /packs/maven-java17/charts
+    directory: /helm/charts
     ref: master
