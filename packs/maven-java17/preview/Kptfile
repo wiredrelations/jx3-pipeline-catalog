@@ -7,5 +7,5 @@ upstream:
   git:
     commit: 6b80dbd4eb04eaf9908fa94a88d0d8c233ce718d
     repo: https://github.com/wiredrelations/jx3-pipeline-catalog
-    directory: /helm/charts
+    directory: /helm/preview
     ref: master
