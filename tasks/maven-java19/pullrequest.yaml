@@ -46,7 +46,7 @@ spec:
           script: |
             #!/usr/bin/env bash
             echo "not changing version for SNAPSHOT"
-        - image: maven:3-eclipse-temurin-19
+        - image: maven:3-eclipse-temurin-19-focal
           name: build-mvn-install
           resources: {}
           script: |
