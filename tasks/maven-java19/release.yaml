@@ -58,6 +58,15 @@ spec:
           script: |
             #!/usr/bin/env sh
             jx gitops variables
+            #===== custom workaround for jx failure
+            source .jx/variables.sh
+            echo "Echoing version ..."
+            cat VERSION
+            truncate -s0 version
+            echo $VERSION > VERSION
+            echo "Echoing version ..."
+            cat VERSION
+            #===== end custom workaround
         - image: maven:3-eclipse-temurin-19-focal
           name: build-mvn-deploy
           resources: {}
