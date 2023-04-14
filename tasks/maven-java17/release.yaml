@@ -31,24 +31,7 @@ spec:
             name: release-gpg
           workingDir: /workspace/source
         steps:
-        - env:
-          - name: GIT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                key: password
-                name: tekton-git
-          - name: GIT_USER
-            valueFrom:
-              secretKeyRef:
-                key: username
-                name: tekton-git
-          image: ghcr.io/jenkins-x/jx-release-version:2.6.10
-          name: next-version
-          resources: {}
-          script: |
-            #!/usr/bin/env sh
-            jx-release-version --tag > VERSION
-        - image: ghcr.io/jenkins-x/jx-boot:3.10.83
+        - image: ghcr.io/jenkins-x/jx-boot:3.2.337
           name: jx-variables
           resources:
             # set requests for the pod here
@@ -58,15 +41,6 @@ spec:
           script: |
             #!/usr/bin/env sh
             jx gitops variables
-            #===== custom workaround for jx failure
-            source .jx/variables.sh
-            echo "Echoing version ..."
-            cat VERSION
-            truncate -s0 version
-            echo $VERSION > VERSION
-            echo "Echoing version ..."
-            cat VERSION
-            #===== end custom workaround
         - image: maven:3-eclipse-temurin-17-focal
           name: build-mvn-deploy
           resources: {}
