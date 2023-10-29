@@ -10,6 +10,7 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
           env:
           - name: _JAVA_OPTIONS
@@ -17,12 +18,11 @@ spec:
               -XX:+UseParallelGC -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:GCTimeRatio=4
               -XX:AdaptiveSizePolicyWeight=90 -Xms10m -Xmx1800m
           - name: MAVEN_OPTS
-            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
+              -Dmaven.wagon.http.retryHandler.count=3
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-quarkus-native/pullrequest.yaml@versionStream
           name: ""
-          resources:
-            # override limits for all containers here
-            limits: {}
+          resources: {}
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
@@ -32,11 +32,7 @@ spec:
           name: ""
           resources: {}
         - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: 400m
-              memory: 2Gi
+          resources: {}
         - name: build-set-version
           resources: {}
         - name: build-mvn-install

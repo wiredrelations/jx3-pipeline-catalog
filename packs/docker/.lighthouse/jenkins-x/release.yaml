@@ -10,12 +10,11 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/docker/release.yaml@versionStream
           name: ""
-          resources:
-            # override limits for all containers here
-            limits: {}
+          resources: {}
           workingDir: /workspace/source
         steps:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
@@ -24,11 +23,7 @@ spec:
         - name: next-version
           resources: {}
         - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: 400m
-              memory: 512Mi
+          resources: {}
         - name: check-registry
           resources: {}
         - name: build-container-build

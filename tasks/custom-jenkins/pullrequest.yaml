@@ -10,36 +10,23 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
-          env:
-          - name: HOME
-            value: /tekton/home
-          envFrom:
-          - secretRef:
-              name: jx-boot-job-env-vars
-              optional: true
+          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/custom-jenkins/pullrequest.yaml@versionStream
           name: ""
-          resources:
-            limits: {}
+          resources: {}
           workingDir: /workspace/source
         steps:
-        - image: ghcr.io/jenkins-x/jx-boot:3.10.86
-          name: jx-variables
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
+          name: ""
+          resources: {}
+        - name: jx-variables
           resources:
-            # set requests for the pod here
             requests:
               cpu: 400m
               memory: 600Mi
-          script: |
-            #!/usr/bin/env sh
-            jx gitops variables
-            jx gitops pr variables
-        - image: ghcr.io/jenkins-x/builder-go:2.1.155-779
-          name: build-build
+        - name: build-build
           resources: {}
-          script: |
-            #!/usr/bin/env bash
-            jx step custom pipeline
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 12h0m0s

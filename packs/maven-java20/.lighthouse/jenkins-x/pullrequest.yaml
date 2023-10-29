@@ -10,15 +10,15 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
           env:
           - name: MAVEN_OPTS
-            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
+              -Dmaven.wagon.http.retryHandler.count=3
           image: uses:wiredrelations/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
           name: ""
-          resources:
-            # override limits for all containers here
-            limits: {}
+          resources: {}
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
@@ -27,21 +27,23 @@ spec:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
           name: ""
           resources: {}
-        - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: 400m
-              memory: 512Mi
-        - name: build-set-version
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
+          name: jx-variables
           resources: {}
-        - name: build-mvn-install
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
+          name: build-set-version
           resources: {}
-        - name: check-registry
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
+          name: build-mvn-install
           resources: {}
-        - name: build-container-build
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
+          name: check-registry
           resources: {}
-        - name: promote-jx-preview
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
+          name: build-container-build
+          resources: {}
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java20/pullrequest.yaml@versionStream
+          name: promote-jx-preview
           resources: {}
         volumes:
         - name: maven-settings

@@ -4,65 +4,66 @@ metadata:
   creationTimestamp: null
   name: lint
 spec:
-  workspaces:
-  - name: output
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
   pipelineSpec:
+    finally:
+    - name: lookml-lint-pr-comment
+      taskSpec:
+        metadata: {}
+        spec: null
+        stepTemplate:
+          env:
+          - name: HOME
+            value: /tekton/home
+          name: ""
+          resources: {}
+          workingDir: $(workspaces.output.path)/source
+        steps:
+        - image: ghcr.io/jenkins-x/jx-gitops:0.3.1
+          name: lookml-lint-pr-comment
+          resources: {}
+          script: |
+            #!/bin/sh
+            set -x
+            . .jx/variables.sh
+            jx gitops pr comment -c "$(cat issues.md)"
+        workspaces:
+        - mountPath: /workspace
+          name: output
+      workspaces:
+      - name: output
+        workspace: output
     tasks:
     - name: from-build-pack
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/lookml/lint.yaml@versionStream
           name: ""
-          resources:
-            # override limits for all containers here
-            limits: {}
+          resources: {}
           workingDir: $(workspaces.output.path)/source
         steps:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
           name: ""
           resources: {}
         - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: 400m
-              memory: 512Mi
+          resources: {}
         - name: build-lookml-lint
           resources: {}
-    finally:
-    - name: lookml-lint-pr-comment
-      workspaces:
-      - name: output
-        workspace: output
-      taskSpec:
-        workspaces:
-          - name: output
-            mountPath: /workspace
-        metadata: {}
-        stepTemplate:
-          env:
-          - name: HOME
-            value: /tekton/home
-          name: ""
-          workingDir: $(workspaces.output.path)/source
-        steps:
-        - name: lookml-lint-pr-comment
-          image: ghcr.io/jenkins-x/jx-gitops:0.3.1
-          script: |
-            #!/bin/sh
-            set -x
-            . .jx/variables.sh
-            jx gitops pr comment -c "$(cat issues.md)"
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 12h0m0s
+  workspaces:
+  - name: output
+    volumeClaimTemplate:
+      metadata:
+        creationTimestamp: null
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      status: {}
 status: {}

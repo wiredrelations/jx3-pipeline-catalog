@@ -10,28 +10,27 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/ml-python-training/pullrequest.yaml@versionStream
           name: ""
-          resources:
-            # override limits for all containers here
-            limits: {}
+          resources: {}
           workingDir: /workspace/source
         steps:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
           name: ""
           resources: {}
-        - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: "2"
-              memory: 4Gi
-        - name: build-flake8
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/ml-python-gpu-training/pullrequest.yaml@versionStream
+          name: jx-variables
           resources: {}
-        - name: build-testing
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/ml-python-gpu-training/pullrequest.yaml@versionStream
+          name: build-flake8
           resources: {}
-        - name: build-training
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/ml-python-gpu-training/pullrequest.yaml@versionStream
+          name: build-testing
+          resources: {}
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/ml-python-gpu-training/pullrequest.yaml@versionStream
+          name: build-training
           resources: {}
   podTemplate: {}
   serviceAccountName: tekton-bot

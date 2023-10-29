@@ -10,15 +10,15 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
+        spec: null
         stepTemplate:
           env:
           - name: MAVEN_OPTS
-            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
+              -Dmaven.wagon.http.retryHandler.count=3
           image: uses:wiredrelations/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
           name: ""
-          resources:
-            # override limits for all containers here
-            limits: {}
+          resources: {}
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
@@ -29,25 +29,29 @@ spec:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
           name: ""
           resources: {}
-        - name: next-version
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: next-version
           resources: {}
-        - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: 400m
-              memory: 512Mi
-        - name: build-mvn-deploy
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: jx-variables
           resources: {}
-        - name: check-registry
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: build-mvn-deploy
           resources: {}
-        - name: build-container-build
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: check-registry
           resources: {}
-        - name: promote-changelog
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: build-container-build
           resources: {}
-        - name: promote-helm-release
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: promote-changelog
           resources: {}
-        - name: promote-jx-promote
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: promote-helm-release
+          resources: {}
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java21/release.yaml@versionStream
+          name: promote-jx-promote
           resources: {}
         volumes:
         - name: maven-settings
