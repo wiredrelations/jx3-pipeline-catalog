@@ -26,10 +26,13 @@ spec:
               cpu: 400m
               memory: 512Mi
         - name: build-npm-install
+          image: node:16-slim
           resources: {}
         - name: build-npm-test
+          image: node:16-slim
           resources: {}
         - name: build-ui-build
+          image: node:16-slim
           resources: {}
         - name: check-registry
           resources: {}
