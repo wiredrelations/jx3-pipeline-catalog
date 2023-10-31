@@ -10,7 +10,6 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
-        spec: null
         stepTemplate:
           env:
           - name: _JAVA_OPTIONS
@@ -18,11 +17,12 @@ spec:
               -XX:+UseParallelGC -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:GCTimeRatio=4
               -XX:AdaptiveSizePolicyWeight=90 -Xms10m -Xmx192m
           - name: MAVEN_OPTS
-            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
-              -Dmaven.wagon.http.retryHandler.count=3
+            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java14/release.yaml@versionStream
           name: ""
-          resources: {}
+          resources:
+            # override limits for all containers here
+            limits: {}
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
@@ -36,7 +36,11 @@ spec:
         - name: next-version
           resources: {}
         - name: jx-variables
-          resources: {}
+          resources:
+            # override requests for the pod here
+            requests:
+              cpu: 400m
+              memory: 512Mi
         - name: build-mvn-deploy
           resources: {}
         - name: check-registry

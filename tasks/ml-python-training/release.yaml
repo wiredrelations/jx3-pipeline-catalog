@@ -10,29 +10,95 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
-        spec: null
         stepTemplate:
-          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/ml-python-training/release.yaml@versionStream
+          env:
+          - name: HOME
+            value: /tekton/home
+          envFrom:
+          - secretRef:
+              name: jx-boot-job-env-vars
+              optional: true
           name: ""
-          resources: {}
+          resources:
+            limits: {}
           workingDir: /workspace/source
         steps:
-        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
-          name: ""
+        - env:
+          - name: GIT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: tekton-git
+          - name: GIT_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: tekton-git
+          image: ghcr.io/jenkins-x/jx-release-version:2.6.10
+          name: next-version
           resources: {}
-        - name: next-version
-          resources: {}
-        - name: jx-variables
+          script: |
+            #!/usr/bin/env sh
+            jx-release-version --tag > VERSION
+        - image: ghcr.io/jenkins-x/jx-boot:3.10.86
+          name: jx-variables
           resources:
+            # set requests for the pod here
             requests:
               cpu: "2"
               memory: 4Gi
-        - name: build-flake8
+          script: |
+            #!/usr/bin/env sh
+            jx gitops variables
+        - image: ghcr.io/jenkins-x/builder-machine-learning:0.1.1317
+          name: build-flake8
           resources: {}
-        - name: build-training
+          script: |
+            #!/bin/sh
+            source /root/.bashrc
+            flake8
+        - image: ghcr.io/jenkins-x/builder-machine-learning:0.1.1317
+          name: build-training
           resources: {}
-        - name: build-export-model
+          script: |
+            #!/bin/sh
+            source /root/.bashrc
+            python3 -m pip install -r ./requirements.txt
+            python3 app.py
+        - env:
+          - name: GIT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: tekton-git
+          - name: GIT_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: tekton-git
+          image: ghcr.io/jenkins-x/jx-boot:3.10.86
+          name: build-export-model
           resources: {}
+          script: |+
+            #!/usr/bin/env sh
+            source .jx/variables.sh
+            export TARGET_SERVICE=`echo $REPO_NAME | sed -Ee s/-training$/-service/`
+            export GIT_PROVIDER=`echo $REPO_URL | grep -oE '(^https?:\/\/[a-zA-Z\d\-\.]+)'`
+            export TARGET_SERVICE_REPO=`echo $GIT_PROVIDER/$REPO_OWNER/$TARGET_SERVICE`
+            export TARGET_BRANCH=`echo sync-$VERSION`
+            echo "Deploying model to ${TARGET_SERVICE_REPO}"
+            git clone $TARGET_SERVICE_REPO
+            cd $TARGET_SERVICE
+            git checkout $TARGET_BRANCH || git checkout -b $TARGET_BRANCH
+            git lfs install
+            git lfs track '*.onnx'
+            \cp ../*.onnx .
+            git add *.onnx
+            git commit -m "New model trained from ${GIT_PROVIDER}/${REPO_OWNER}/${REPO_NAME}/commit/${PULL_BASE_SHA}"
+            git push --set-upstream origin $TARGET_BRANCH
+            { jx project pullrequest --title 'New model trained' --body "Exported from training version ${GIT_PROVIDER}/${REPO_OWNER}/${REPO_NAME}/commit/${PULL_BASE_SHA}" || echo 'Using previous PR'; }
+            sha1sum *.onnx >&2
+
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 12h0m0s

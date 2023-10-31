@@ -10,18 +10,23 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
-        spec: null
         stepTemplate:
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/python/pullrequest.yaml@versionStream
           name: ""
-          resources: {}
+          resources:
+            # override limits for all containers here
+            limits: {}
           workingDir: /workspace/source
         steps:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
           name: ""
           resources: {}
         - name: jx-variables
-          resources: {}
+          resources:
+            # override requests for the pod here
+            requests:
+              cpu: 400m
+              memory: 512Mi
         - name: build-python-unittest
           resources: {}
         - name: check-registry

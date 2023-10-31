@@ -10,7 +10,6 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
-        spec: null
         stepTemplate:
           image: uses:jenkins-x/jx3-pipeline-catalog/tasks/nop/pullrequest.yaml@versionStream
           name: ""

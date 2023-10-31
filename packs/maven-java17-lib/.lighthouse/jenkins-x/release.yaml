@@ -10,15 +10,15 @@ spec:
       resources: {}
       taskSpec:
         metadata: {}
-        spec: null
         stepTemplate:
           env:
           - name: MAVEN_OPTS
-            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25
-              -Dmaven.wagon.http.retryHandler.count=3
+            value: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
           image: uses:wiredrelations/jx3-pipeline-catalog/tasks/maven-java17-lib/release.yaml@versionStream
           name: ""
-          resources: {}
+          resources:
+            # override limits for all containers here
+            limits: {}
           volumeMounts:
           - mountPath: /root/.m2/
             name: maven-settings
@@ -29,14 +29,15 @@ spec:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
           name: ""
           resources: {}
-        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java17-lib/release.yaml@versionStream
-          name: next-version
+        - name: next-version
           resources: {}
-        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java17-lib/release.yaml@versionStream
-          name: jx-variables
-          resources: {}
-        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java17-lib/release.yaml@versionStream
-          name: build-mvn-deploy
+        - name: jx-variables
+          resources:
+            # override requests for the pod here
+            requests:
+              cpu: 400m
+              memory: 512Mi
+        - name: build-mvn-deploy
           resources: {}
         volumes:
         - name: maven-settings
