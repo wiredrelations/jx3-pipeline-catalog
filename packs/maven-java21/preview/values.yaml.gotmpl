@@ -9,7 +9,13 @@ image:
 
 env:
   SPRING_PROFILES_ACTIVE: preview
-  
+  LOGSTASH_URL: logstash-logstash.elastic.svc.cluster.local:4560
+envFrom:
+- secretRef:
+    name: msk-config
+- secretRef:
+    name: preview-mongo-config
+
 # default spring boot probe path
 probePath: /actuator/health
 probePort: 9090

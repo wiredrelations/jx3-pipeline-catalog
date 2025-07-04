@@ -34,7 +34,7 @@ spec:
               secretKeyRef:
                 key: username
                 name: tekton-git
-          image: ghcr.io/jenkins-x/jx-release-version:2.6.10
+          image: ghcr.io/jenkins-x/jx-release-version:2.7.10
           name: next-version
           resources:
             # set requests for the pod here
@@ -44,7 +44,7 @@ spec:
           script: |
             #!/usr/bin/env sh
             jx-release-version --tag > VERSION
-        - image: ghcr.io/jenkins-x/jx-boot:3.10.86
+        - image: ghcr.io/jenkins-x/jx-boot:3.11.98
           name: jx-variables
           resources: {}
           script: |
@@ -56,7 +56,7 @@ spec:
               secretKeyRef:
                 key: password
                 name: tekton-git
-          image: ghcr.io/jenkins-x/jx-goreleaser-image:0.1.0@sha256:4ac5aeb4ce850761aeffc585446ea47bbcfa680d096fdd8c5d00c5a8c5adbcc0
+          image: ghcr.io/jenkins-x/jx-goreleaser-image:1.0.2@sha256:7632b381687494e910e06a88b3801e39c1f17fbb44402db3cef45b2b342204e1
           name: upload-binaries
           resources: {}
           script: |
@@ -75,7 +75,7 @@ spec:
             export GOVERSION="$(go version | sed -e 's/^[^0-9.]*\([0-9.]*\).*/\1/')"
             export ROOTPACKAGE="github.com/$REPO_OWNER/$REPO_NAME"
             goreleaser release
-        - image: ghcr.io/jenkins-x/jx-registry:0.1.10
+        - image: ghcr.io/jenkins-x/jx-registry:0.1.15
           name: check-registry
           resources: {}
         - image: gcr.io/kaniko-project/executor:v1.9.1-debug

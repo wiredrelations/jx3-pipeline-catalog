@@ -1,1 +1,1 @@
-# my application
+# Java 21 application
