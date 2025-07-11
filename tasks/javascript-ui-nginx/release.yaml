@@ -112,13 +112,14 @@ spec:
             #!/usr/bin/env bash
             source .jx/variables.sh
 
-            # Function to promote helm release with retry logic for concurrent pipelines
+            # Function to promote helm release with adaptive retry logic for concurrent pipelines
             promote_helm_with_retry() {
               local max_attempts=5
               local attempt=1
-              local base_delay=3
+              local base_delay=2
+              local max_delay=30
 
-              echo "🚀 Starting helm release promotion with retry logic..."
+              echo "🚀 Starting helm release promotion with adaptive retry logic..."
 
               # Configure git identity using existing credentials or defaults
               echo "🔧 Configuring git identity..."
@@ -126,8 +127,8 @@ spec:
                 git config --global user.name "$GIT_USER"
                 echo "✅ Using GIT_USER: $GIT_USER"
               else
-                git config --global user.name "Wired Relations Bot"
-                echo "✅ Using default name: Wired Relations Bot"
+                git config --global user.name "Tekton Bot"
+                echo "✅ Using default name: Tekton Bot"
               fi
 
               # Try to extract email from GIT_USER or use default
@@ -138,8 +139,8 @@ spec:
                 git config --global user.email "$GIT_USER_EMAIL"
                 echo "✅ Using GIT_USER_EMAIL: $GIT_USER_EMAIL"
               else
-                git config --global user.email "github@wiredrelations.com"
-                echo "✅ Using default email: github@wiredrelations.com"
+                git config --global user.email "tekton@jenkins-x.io"
+                echo "✅ Using default email: tekton@jenkins-x.io"
               fi
 
               # Show current git config for debugging
@@ -147,14 +148,7 @@ spec:
               git config --global user.name
               git config --global user.email
 
-              # Quick sync before first attempt to reduce conflicts
-              echo "🔄 Pre-syncing with remote to minimize conflicts..."
-              if [ -d "charts" ]; then
-                cd charts
-                git fetch origin 2>/dev/null || echo "⚠️  Pre-fetch failed, continuing anyway..."
-                git pull origin gh-pages --rebase 2>/dev/null || echo "⚠️  Pre-pull failed, continuing anyway..."
-                cd - > /dev/null
-              fi
+              echo "ℹ️  Note: jx gitops helm release manages its own git operations in temporary directories"
 
               while [ $attempt -le $max_attempts ]; do
                 echo "📦 Helm promotion attempt $attempt of $max_attempts..."
@@ -167,37 +161,23 @@ spec:
 
                 echo "❌ Helm release promotion failed on attempt $attempt"
 
-                # If not the last attempt, prepare for retry
+                # If not the last attempt, calculate adaptive delay
                 if [ $attempt -lt $max_attempts ]; then
-                  local wait_time=$((attempt * base_delay))
-                  echo "⏳ Waiting ${wait_time}s before retry (exponential backoff)..."
+                  # Exponential backoff with cap: min(base_delay * 2^(attempt-1), max_delay)
+                  local wait_time=$((base_delay * (1 << (attempt - 1))))
+                  if [ $wait_time -gt $max_delay ]; then
+                    wait_time=$max_delay
+                  fi
+
+                  # Add jitter (20% of wait time) to reduce thundering herd
+                  local jitter=$((wait_time / 5))
+                  local random_jitter=$((RANDOM % (jitter + 1)))
+                  wait_time=$((wait_time + random_jitter))
+
+                  echo "⏳ Waiting ${wait_time}s before retry (adaptive backoff + jitter)..."
                   sleep $wait_time
 
-                  # Try to sync with remote changes to resolve conflicts
-                  echo "🔄 Syncing with remote changes to resolve potential conflicts..."
-
-                  # Navigate to charts directory if it exists
-                  if [ -d "charts" ]; then
-                    cd charts
-                    echo "📍 Current directory: $(pwd)"
-
-                    # Fetch latest changes from remote
-                    echo "📥 Fetching latest changes from remote..."
-                    git fetch origin 2>/dev/null || {
-                      echo "⚠️  Failed to fetch from remote, continuing anyway..."
-                    }
-
-                    # Try to pull and rebase changes
-                    echo "🔀 Attempting to pull and rebase changes..."
-                    git pull origin gh-pages --rebase 2>/dev/null || {
-                      echo "⚠️  Failed to pull/rebase, this might be expected for new repositories"
-                    }
-
-                    # Return to original directory
-                    cd - > /dev/null
-                  else
-                    echo "📁 No charts directory found, skipping git sync"
-                  fi
+                  echo "🔄 Ready for next attempt (jx will fetch fresh repository)..."
                 fi
 
                 ((attempt++))
