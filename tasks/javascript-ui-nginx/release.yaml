@@ -107,11 +107,81 @@ spec:
             jx changelog create --version v${VERSION} --output-markdown ../changelog.md
         - image: ghcr.io/jenkins-x/jx-boot:3.11.98
           name: promote-helm-release
-          resources: {}
+          resources: { }
           script: |
-            #!/usr/bin/env sh
+            #!/usr/bin/env bash
             source .jx/variables.sh
-            jx gitops helm release
+
+            # Function to promote helm release with retry logic for concurrent pipelines
+            promote_helm_with_retry() {
+              local max_attempts=5
+              local attempt=1
+              local base_delay=3
+
+              echo "🚀 Starting helm release promotion with retry logic for JavaScript UI..."
+
+              while [ $attempt -le $max_attempts ]; do
+                echo "📦 Helm promotion attempt $attempt of $max_attempts..."
+
+                # Try to promote the helm release
+                if jx gitops helm release; then
+                  echo "✅ Helm release promotion successful on attempt $attempt"
+                  return 0
+                fi
+
+                echo "❌ Helm release promotion failed on attempt $attempt"
+
+                # If not the last attempt, prepare for retry
+                if [ $attempt -lt $max_attempts ]; then
+                  local wait_time=$((attempt * base_delay))
+                  echo "⏳ Waiting ${wait_time}s before retry (exponential backoff)..."
+                  sleep $wait_time
+
+                  # Try to sync with remote changes to resolve conflicts
+                  echo "🔄 Syncing with remote changes to resolve potential conflicts..."
+
+                  # Navigate to charts directory if it exists
+                  if [ -d "charts" ]; then
+                    cd charts
+                    echo "📍 Current directory: $(pwd)"
+
+                    # Fetch latest changes from remote
+                    echo "📥 Fetching latest changes from remote..."
+                    git fetch origin 2>/dev/null || {
+                      echo "⚠️  Failed to fetch from remote, continuing anyway..."
+                    }
+
+                    # Try to pull and rebase changes
+                    echo "🔀 Attempting to pull and rebase changes..."
+                    git pull origin gh-pages --rebase 2>/dev/null || {
+                      echo "⚠️  Failed to pull/rebase, this might be expected for new repositories"
+                    }
+
+                    # Return to original directory
+                    cd - > /dev/null
+                  else
+                    echo "📁 No charts directory found, skipping git sync"
+                  fi
+                fi
+
+                ((attempt++))
+              done
+
+              echo "💥 All helm promotion attempts failed after $max_attempts tries"
+              echo "🔍 This might indicate a persistent issue with the helm repository or configuration"
+              return 1
+            }
+
+            # Execute the retry function
+            promote_helm_with_retry
+
+            # Check the exit status
+            if [ $? -eq 0 ]; then
+              echo "🎉 Helm release promotion completed successfully!"
+            else
+              echo "🚨 Helm release promotion failed after all retry attempts"
+              exit 1
+            fi
         - image: ghcr.io/jenkins-x-plugins/jx-promote:0.6.22
           name: promote-jx-promote
           resources: {}
