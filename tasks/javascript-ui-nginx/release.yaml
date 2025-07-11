@@ -118,7 +118,43 @@ spec:
               local attempt=1
               local base_delay=3
 
-              echo "🚀 Starting helm release promotion with retry logic for JavaScript UI..."
+              echo "🚀 Starting helm release promotion with retry logic..."
+
+              # Configure git identity using existing credentials or defaults
+              echo "🔧 Configuring git identity..."
+              if [ -n "$GIT_USER" ]; then
+                git config --global user.name "$GIT_USER"
+                echo "✅ Using GIT_USER: $GIT_USER"
+              else
+                git config --global user.name "Tekton Bot"
+                echo "✅ Using default name: Tekton Bot"
+              fi
+
+              # Try to extract email from GIT_USER or use default
+              if [ -n "$GIT_USER" ] && echo "$GIT_USER" | grep -q "@"; then
+                git config --global user.email "$GIT_USER"
+                echo "✅ Using GIT_USER as email: $GIT_USER"
+              elif [ -n "$GIT_USER_EMAIL" ]; then
+                git config --global user.email "$GIT_USER_EMAIL"
+                echo "✅ Using GIT_USER_EMAIL: $GIT_USER_EMAIL"
+              else
+                git config --global user.email "tekton@jenkins-x.io"
+                echo "✅ Using default email: tekton@jenkins-x.io"
+              fi
+
+              # Show current git config for debugging
+              echo "📋 Current git configuration:"
+              git config --global user.name
+              git config --global user.email
+
+              # Quick sync before first attempt to reduce conflicts
+              echo "🔄 Pre-syncing with remote to minimize conflicts..."
+              if [ -d "charts" ]; then
+                cd charts
+                git fetch origin 2>/dev/null || echo "⚠️  Pre-fetch failed, continuing anyway..."
+                git pull origin gh-pages --rebase 2>/dev/null || echo "⚠️  Pre-pull failed, continuing anyway..."
+                cd - > /dev/null
+              fi
 
               while [ $attempt -le $max_attempts ]; do
                 echo "📦 Helm promotion attempt $attempt of $max_attempts..."
