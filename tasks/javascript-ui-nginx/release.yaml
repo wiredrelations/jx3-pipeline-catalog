@@ -126,8 +126,8 @@ spec:
                 git config --global user.name "$GIT_USER"
                 echo "✅ Using GIT_USER: $GIT_USER"
               else
-                git config --global user.name "Tekton Bot"
-                echo "✅ Using default name: Tekton Bot"
+                git config --global user.name "Wired Relations Bot"
+                echo "✅ Using default name: Wired Relations Bot"
               fi
 
               # Try to extract email from GIT_USER or use default
@@ -138,8 +138,8 @@ spec:
                 git config --global user.email "$GIT_USER_EMAIL"
                 echo "✅ Using GIT_USER_EMAIL: $GIT_USER_EMAIL"
               else
-                git config --global user.email "tekton@jenkins-x.io"
-                echo "✅ Using default email: tekton@jenkins-x.io"
+                git config --global user.email "github@wiredrelations.com"
+                echo "✅ Using default email: github@wiredrelations.com"
               fi
 
               # Show current git config for debugging
