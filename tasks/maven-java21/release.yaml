@@ -113,7 +113,8 @@ spec:
             git commit -a -m "chore: release $VERSION" --allow-empty
             git tag -fa v$VERSION -m "Release version $VERSION"
             git push --force origin v$VERSION
-        - name: debug-git-vars
+        - image: ghcr.io/jenkins-x/jx-boot:3.11.98
+          name: debug-git-vars
           script: |
             #!/usr/bin/env bash
             source .jx/variables.sh
