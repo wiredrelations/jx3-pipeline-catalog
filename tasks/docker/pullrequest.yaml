@@ -23,7 +23,7 @@ spec:
             limits: {}
           workingDir: /workspace/source
         steps:
-        - image: ghcr.io/jenkins-x/jx-boot:3.11.98
+        - image: ghcr.io/jenkins-x/jx-boot:3.16.24
           name: jx-variables
           resources:
             # set requests for the pod here
@@ -32,9 +32,9 @@ spec:
               memory: 512Mi
           script: |
             #!/usr/bin/env sh
-            jx gitops variables
+            jx gitops variables --commit=false
             jx gitops pr variables
-        - image: ghcr.io/jenkins-x/jx-registry:0.1.15
+        - image: ghcr.io/jenkins-x/jx-registry:0.1.17
           name: check-registry
           resources: {}
         - image: gcr.io/kaniko-project/executor:v1.9.1-debug

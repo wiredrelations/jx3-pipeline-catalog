@@ -39,9 +39,13 @@ spec:
           script: |
             #!/usr/bin/env sh
             jx-release-version --tag > VERSION
-        - image: ghcr.io/jenkins-x/jx-boot:3.11.98
+        - image: ghcr.io/jenkins-x/jx-boot:3.16.24
           name: jx-variables
-          resources: {}
+          resources:
+            # set requests for the pod here
+            requests:
+              cpu: 1400m
+              memory: 3600Mi
           script: |
             #!/usr/bin/env sh
             jx gitops variables
@@ -67,7 +71,7 @@ spec:
             #!/bin/ash
             if [ -d "charts/$REPO_NAME" ]; then cd charts/$REPO_NAME
             helm-docs; else echo no charts; fi
-        - image: ghcr.io/jenkins-x/jx-boot:3.11.98
+        - image: ghcr.io/jenkins-x/jx-boot:3.16.24
           name: changelog
           resources: {}
           script: |
@@ -83,7 +87,7 @@ spec:
             else echo no charts; fi
 
             jx changelog create --verbose --version=$VERSION --rev=$PULL_BASE_SHA --output-markdown=changelog.md --update-release=true
-        - image: ghcr.io/jenkins-x/jx-boot:3.11.98
+        - image: ghcr.io/jenkins-x/jx-boot:3.16.24
           name: release-chart
           resources: {}
           script: |
@@ -127,7 +131,7 @@ spec:
           - pr
           - --add-changelog
           - changelog.md
-          image: ghcr.io/jenkins-x/jx-updatebot:0.8.4
+          image: ghcr.io/jenkins-x/jx-updatebot:0.8.10
           name: promote-release
           resources: {}
   serviceAccountName: tekton-bot
